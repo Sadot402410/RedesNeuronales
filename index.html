@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redes</title>
+</head>
+<style>
+    #sitio{
+        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        font-size: 5rem;
+        padding: 2rem;
+        text-align: center;
+        background: rgb(36, 36, 72);
+        color: #ffffff;    
+    }
+</style>
+<body>
+    
+    <div id="sitio">
+        Redes Neuronales
+    </div><br>
+
+    <input data-jscolor="{value: '#FFFFFF'}", oninput="update (this.jscolor)">
+    
+    <script src="js/brain.js"></script>
+    <script src="js/jscolor.min.js"></script>
+
+    <script type="text/javascript">
+
+        var network = new brain.NeuralNetwork();
+
+        network.train([
+            {input:{rojo:0,verde:0,azul:0}, output:{color:1}}, //fondo negro --> 1
+            {input:{rojo:1,verde:1,azul:1}, output:{color:0}}, //fondo blanco --> 0
+            //excepciones
+            {input:{rojo:0,verde:1,azul:0}, output:{color:0}} //fondo blanco --> 0
+        ]);
+
+        
+        function update(color){
+            var rgb= [color.channels.r,color.channels.g,color.channels.b];
+            console.log(rgb);
+
+            var div = document.getElementById("sitio");
+            div.style.background = color.toHEXString();
+
+            var entrada = {
+                rojo: rgb[0]/255, //255,255,255 = 1,1,1
+                verde: rgb[1]/255, //127,0,255 = .5, 0, 1
+                azul: rgb[2]/255
+            };
+
+            var resultado = network.run(entrada);
+            console.log(resultado);
+
+            if(resultado.color > .6){ //fondo negro
+                div.style.color='white';
+            }else{
+                div.style.color='black';
+            }
+        }
+    </script>
+</body>
+</html>
